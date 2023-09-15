@@ -1,8 +1,10 @@
-# streaming-04-multiple-consumers
+# streaming-04-multiple-consumers Project
 
-> Use RabbitMQ to distribute tasks to multiple workers
+Publisher name & Date: Malcolm Phillip 14 September 2023
 
-One process will create task messages. Multiple worker processes will share the work. 
+## Introduction
+> 
+This project of RabbitMQ involves distributing tasks to multiple workers. One process will create task messages. Multiple worker processes will share the work. 
 
 
 ## Before You Begin
@@ -16,6 +18,20 @@ One process will create task messages. Multiple worker processes will share the 
 
 1. Read the [RabbitMQ Tutorial - Work Queues](https://www.rabbitmq.com/tutorials/tutorial-two-python.html)
 1. Read the code and comments in this repo.
+
+## Prerequisites
+
+1. Git
+1. Python 3.7+ (3.11+ preferred)
+1. VS Code Editor
+1. VS Code Extension: Python (by Microsoft)
+1. RabbitMQ Server installed and running locally
+1. pika 1.3.2 (or recent)
+1. Logger 
+1. Webbrowser
+1. sys
+1. Time
+1. csv
 
 ## RabbitMQ Admin 
 
@@ -54,7 +70,12 @@ Which worker gets which tasks?
 
 - [RabbitMQ Tutorial - Work Queues](https://www.rabbitmq.com/tutorials/tutorial-two-python.html)
 
+- See https://github.com/MPhillipS556427/streaming-03-rabbitmq.git for remedial training exercises to assist prior to executing this project.
 
-## Screenshot
 
-See a running example with at least 3 concurrent process windows here:
+## Screenshot of 3 concurrent process windows: 
+
+
+
+
+## Screenshot of RabbitMQ Webinterface:
