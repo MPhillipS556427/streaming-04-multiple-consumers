@@ -74,8 +74,7 @@ Which worker gets which tasks?
 
 
 ## Screenshot of 3 concurrent process windows: 
-
-
-
+![Alt text](<Screenshot 2023-09-14 at 8.58.19 PM.png>)
 
 ## Screenshot of RabbitMQ Webinterface:
+![Alt text](<Screenshot 2023-09-14 at 8.59.24 PM.png>)
