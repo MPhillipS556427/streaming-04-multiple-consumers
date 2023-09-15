@@ -1,28 +1,42 @@
 """
     This program sends a message to a queue on the RabbitMQ server.
+    Messages come from a csv file.
     Make tasks harder/longer-running by adding dots at the end of the message.
 
-    Author: Denise Case
-    Date: January 15, 2023
+
+    Author: Malcolm Phillip
+    Date: September 14, 2023
 
 """
 
 import pika
 import sys
 import webbrowser
-
-# Configure logging
 from util_logger import setup_logger
+import csv
+import time
+import logging
 
 logger, logname = setup_logger(__file__)
 
+# Set up basic configuration for logging
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+# Declare program constants
+HOST = "localhost"
+PORT = 9999
+ADDRESS_TUPLE = (HOST, PORT)
+TASKS_FILE_NAME = "tasks.csv"
+SHOW_OFFER = True  # Control whether to show the RabbitMQ Admin webpage offer
+
 def offer_rabbitmq_admin_site():
     """Offer to open the RabbitMQ Admin website"""
-    ans = input("Would you like to monitor RabbitMQ queues? y or n ")
-    print()
-    if ans.lower() == "y":
+    global SHOW_OFFER
+    if SHOW_OFFER:
         webbrowser.open_new("http://localhost:15672/#/queues")
-        print()
+
 
 def send_message(host: str, queue_name: str, message: str):
     """
@@ -48,7 +62,7 @@ def send_message(host: str, queue_name: str, message: str):
         # use the channel to publish a message to the queue
         # every message passes through an exchange
         ch.basic_publish(exchange="", routing_key=queue_name, body=message)
-        # log a message to the console for the user
+        # print a message to the console for the user
         logger.info(f" [x] Sent {message}")
     except pika.exceptions.AMQPConnectionError as e:
         logger.error(f"Error: Connection to RabbitMQ server failed: {e}")
@@ -57,6 +71,18 @@ def send_message(host: str, queue_name: str, message: str):
         # close the connection to the server
         conn.close()
 
+
+def read_tasks_from_csv(file_name):
+    """Read tasks from a CSV file and return them as a list."""
+    tasks = []
+    with open(file_name, "r") as input_file:
+        reader = csv.reader(input_file)
+        for row in reader:
+            if row:
+                tasks.append(row[0])  # Extract the task from the first column
+    return tasks
+
+
 # Standard Python idiom to indicate main program entry point
 # This allows us to import this module and use its functions
 # without executing the code below.
@@ -64,10 +90,10 @@ def send_message(host: str, queue_name: str, message: str):
 if __name__ == "__main__":  
     # ask the user if they'd like to open the RabbitMQ Admin site
     offer_rabbitmq_admin_site()
-    # get the message from the command line
-    # if no arguments are provided, use the default message
-    # use the join method to convert the list of arguments into a string
-    # join by the space character inside the quotes
-    message = " ".join(sys.argv[1:]) or "Second task......."
-    # send the message to the queue
-    send_message("localhost","task_queue2",message)
+
+    #call the custom function to read tasks from csv to look at our previously specified csv file
+    tasks = read_tasks_from_csv(TASKS_FILE_NAME)
+
+    for task in tasks:
+        send_message("localhost", "task_queue3", task)
+        logger.info(f"Sent: {task} to RabbitMQ.")

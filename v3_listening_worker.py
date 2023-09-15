@@ -2,16 +2,18 @@
     This program listens for work messages contiously. 
     Start multiple versions to add more workers.  
 
-    Author: Denise Case
-    Date: January 15, 2023
+    Author: Malcolm Phillip
+    Date: September 14, 2023
 
 """
 
 import pika
 import sys
 import time
+from util_logger import setup_logger
+import logging
 
-from sklearn import logger
+logger, logname = setup_logger(__file__)
 
 # define a callback function to be called when a message is received
 def callback(ch, method, properties, body):
@@ -21,14 +23,14 @@ def callback(ch, method, properties, body):
     # simulate work by sleeping for the number of dots in the message
     time.sleep(body.count(b"."))
     # when done with task, tell the user
-    print(" [x] Done.")
+    logger.info(" [x] Done.")
     # acknowledge the message was received and processed 
     # (now it can be deleted from the queue)
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
 # define a main function to run the program
-def main(hn: str = "localhost", qn: str = "task_queue"):
+def main(hn: str = "localhost", qn: str = "task_queue3"):
     """ Continuously listen for task messages on a named queue."""
 
     # when a statement can go wrong, use a try-except block
@@ -39,11 +41,11 @@ def main(hn: str = "localhost", qn: str = "task_queue"):
 
     # except, if there's an error, do this
     except Exception as e:
-        logger.error()
-        logger.error("ERROR: connection to RabbitMQ server failed.")
-        logger.error(f"Verify the server is running on host={hn}.")
-        logger.error(f"The error says: {e}")
-        logger.error()
+        logger.info()
+        logger.info("ERROR: connection to RabbitMQ server failed.")
+        logger.info(f"Verify the server is running on host={hn}.")
+        logger.info(f"The error says: {e}")
+        logger.info()
         sys.exit(1)
 
     try:
@@ -79,16 +81,16 @@ def main(hn: str = "localhost", qn: str = "task_queue"):
 
     # except, in the event of an error OR user stops the process, do this
     except Exception as e:
-        logger.error()
-        logger.error("ERROR: something went wrong.")
-        logger.error(f"The error says: {e}")
+        logger.info()
+        logger.info("ERROR: something went wrong.")
+        logger.info(f"The error says: {e}")
         sys.exit(1)
     except KeyboardInterrupt:
-        logger.error()
-        logger.error(" User interrupted continuous listening process.")
+        logger.info()
+        logger.info(" User interrupted continuous listening process.")
         sys.exit(0)
     finally:
-        logger.error("\nClosing connection. Goodbye.\n")
+        logger.info("\nClosing connection. Goodbye.\n")
         connection.close()
 
 
@@ -98,4 +100,4 @@ def main(hn: str = "localhost", qn: str = "task_queue"):
 # If this is the program being run, then execute the code below
 if __name__ == "__main__":
     # call the main function with the information needed
-    main("localhost", "task_queue2")
+    main("localhost", "task_queue3")
